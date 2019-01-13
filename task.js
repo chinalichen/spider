@@ -10,7 +10,7 @@ export default class LoadPageTask extends Task {
     this.url = url;
   }
   async execute() {
-    await this.func();
+    
   }
 }
 

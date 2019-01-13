@@ -1,7 +1,6 @@
 export default class TaskManager {
-  constructor(settings) {
-    const { interval = 1000, timeout = 60 * 1000, autoStart = true } = settings;
-    this.settings = settings;
+  constructor({ interval = 1000, timeout = 60 * 1000, autoStart = true }) {
+    this.settings = { interval, timeout, autoStart };
     this.tasks = [];
     this.running = false;
   }
@@ -39,6 +38,6 @@ export default class TaskManager {
     clearTimeout(timer);
     setTimeout(async () => {
       await this.run()
-    });
+    }, this.settings.interval);
   }
 }
