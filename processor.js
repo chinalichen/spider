@@ -3,7 +3,7 @@ export default class TaskManager {
     const { interval = 1000, timeout = 60 * 1000, autoStart = true } = settings;
     this.settings = settings;
     this.tasks = [];
-    this.timer = null;
+    this.running = false;
   }
   addTask(t) {
     this.tasks.push(t);
@@ -12,22 +12,33 @@ export default class TaskManager {
     }
   }
   async start() {
+    if (this.running) {
+      return;
+    }
+    await this.run();
+  }
+  async run() {
+    this.running = true;
+
     if (this.tasks.length === 0) {
+      this.running = false;
       return;
     }
 
     const timer = setTimeout(async () => {
-      await this.start();
+      await this.run();
     }, this.settings.timeout);
 
     try {
       const task = this.tasks.shift();
-      const result = await task.execute();
+      await task.execute();
     } catch (e) {
       console.log("task execute error: ", e);
     }
 
     clearTimeout(timer);
-    setTimeout(async () => { await this.start() });
+    setTimeout(async () => {
+      await this.run()
+    });
   }
 }
